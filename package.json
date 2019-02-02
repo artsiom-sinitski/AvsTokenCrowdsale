@@ -1,0 +1,15 @@
+{
+  "name": "avstokencrowdsale",
+  "version": "1.0.0",
+  "description": "AvS Token Crowdsale",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "lite-server"
+  },
+  "author": "Artsiom Sinitski",
+  "license": "ISC"
+}
