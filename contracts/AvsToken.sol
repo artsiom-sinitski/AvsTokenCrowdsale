@@ -1,21 +1,18 @@
 pragma solidity ^0.4.24;
 
-//import "";
-
 contract AvsToken {
     //STATE DATA
     string public name = "AvsToken";
     string public symbol = "AvS";
+    string public standard = "Avs Token v1.0";
     uint256 public totalSupply;
 
     mapping(address => uint256) private balances;
-    mapping(address => mapping(address => uint256)) private allowed;
+    mapping(address => mapping(address => uint256)) public allowed;
 
     constructor(uint256 _initialSupply) public {
-        
-        totalSupply = _initialSupply;
-        //allocate initial supply
         balances[msg.sender] = _initialSupply;
+        totalSupply = _initialSupply;
     }
 
     //EVENTS
@@ -50,8 +47,8 @@ contract AvsToken {
     * @param _value The amount to be transferred.
     */
     function transfer(address _to, uint256 _value) public returns (bool) {
-        require(_to != address(0));
         require(balances[msg.sender] >= _value);
+        require(_to != address(0));
         balances[msg.sender] -= _value;
         balances[_to] += _value;
         emit Transfer(msg.sender, _to, _value);
@@ -60,13 +57,27 @@ contract AvsToken {
 
     //TO DO:
     function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
+        require(_value <= balances[_from]);
+        require(_value <= allowed[_from][msg.sender]);
+
+        balances[_from] -= _value;
+        balances[_to] += _value;
+        allowed[_from][msg.sender] -= _value;
 
         emit Transfer(_from, _to, _value);
         return true;
     }
 
-    //TO DO:
+    /**
+    * @dev Approve the passed address to spend the specified amount of tokens on behalf of msg.sender.
+    * @param _spender The address which will spend the funds.
+    * @param _value The amount of tokens to be spent.
+    */
     function approve(address _spender, uint256 _value) public returns (bool) {
+        require( _spender != address(0));
+
+        allowed[msg.sender][_spender] = _value;
+        emit Approval(msg.sender, _spender, _value);
         return true;
     }
 
