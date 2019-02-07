@@ -7,7 +7,7 @@ contract AvsToken {
     string public standard = "Avs Token v1.0";
     uint256 public totalSupply;
 
-    mapping(address => uint256) private balances;
+    mapping(address => uint256) public balances;
     mapping(address => mapping(address => uint256)) public allowed;
 
     constructor(uint256 _initialSupply) public {
@@ -55,7 +55,12 @@ contract AvsToken {
         return true;
     }
 
-    //TO DO:
+     /**
+    * @dev Transfer token for a specified address
+    * @param _from The address to transfer from.
+    * @param _to The address to transfer to.
+    * @param _value The amount to be transferred.
+    */
     function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
         require(_value <= balances[_from]);
         require(_value <= allowed[_from][msg.sender]);

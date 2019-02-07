@@ -4,10 +4,10 @@ import "./AvsToken.sol";
 import "./SafeMath.sol";
 
 contract AvsTokenCrowdsale {
-    using SafeMath for uint256;
+   using SafeMath for uint256;
 
     //STATE DATA
-    address admin;
+    address private admin;
     AvsToken public tokenContract;
     uint256 public tokenPrice;
     uint256 public tokensSold;
@@ -22,13 +22,19 @@ contract AvsTokenCrowdsale {
     }
 
     function buyTokens(uint256 _numberOfTokens) public payable {
+        // make sure users pay the defined token price
         require(msg.value == SafeMath.mul(_numberOfTokens, tokenPrice));
-        // Require a number of tokens is equal to tokens
-        // require contract has enough tokens
-        // req that transfer is successful
+        // require that the contract has enough tokens
+        require(tokenContract.balanceOf(this) >= _numberOfTokens);
+        require(tokenContract.transfer(msg.sender, _numberOfTokens));
        
         tokensSold += _numberOfTokens;
         emit Sell(msg.sender, _numberOfTokens);
     }
 
+    function endSale() public {
+        require(msg.sender == admin);
+        require(tokenContract.transfer(admin, tokenContract.balanceOf(this)));
+        selfdestruct(admin);
+    }
 }
