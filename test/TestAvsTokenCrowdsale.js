@@ -34,7 +34,7 @@ contract('AvsTokenCrowdsale', function(accounts) {
         return AvsTokenCrowdsale.deployed().then(function(instance) {
             tokenCrowdsaleInstance = instance;
             //Provision 75% of all tokens to the token sale contract
-            return tokenInstance.transfer(tokenCrowdsaleInstance.address, tokensAvailable, {from: admin});
+           return tokenInstance.transfer(tokenCrowdsaleInstance.address, tokensAvailable, {from: admin});
         }).then(function(receipt) {
             numberOfTokens = 10;
             return tokenCrowdsaleInstance.buyTokens(numberOfTokens, {from: buyer, value: numberOfTokens * tokenPrice});
@@ -74,13 +74,13 @@ contract('AvsTokenCrowdsale', function(accounts) {
             assert(error.message.indexOf('revert') >= 0, 'must be admin to end the token sale');
             return tokenCrowdsaleInstance.endSale({from: admin});
         }).then(function(receipt) {
-            //console.log("Receipt: ", receipt);
             return tokenInstance.balanceOf(admin);
         }).then(function(balance) {
             assert.equal(balance.toNumber(), 999990, 'returns all unsold AvS tokens to the admin');
-            return tokenCrowdsaleInstance.tokenPrice();
-        }).then(function(price) {
-            assert.equal(price.toNumber(), 0, 'token price was reset on contract removal');
+            //return web3.eth.getBalance(tokenCrowdsaleInstance.address);
+            return tokenInstance.balanceOf(tokenCrowdsaleInstance.address);
+        }).then(function(balance) {
+            assert.equal(balance, 0);
         })
     });
 
